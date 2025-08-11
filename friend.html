@@ -1,0 +1,163 @@
+Friendship Calculator
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Friendship Calculator</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 400px;
+      margin: 20px auto;
+      padding: 15px;
+      background-color: #f9f9f9;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+    h1 {
+      color: #ff6b6b;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .result {
+      text-align: center;
+      margin-top: 20px;
+      display: none;
+    }
+    .percentage {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #ff6b6b;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Friendship Calculator</h1>
+
+    <div class="form-group">
+      <label for="name1">Your Name</label>
+      <input type="text" id="name1" placeholder="Enter your name" />
+    </div>
+
+    <div class="form-group">
+      <label for="name2">Friend's Name</label>
+      <input type="text" id="name2" placeholder="Enter friend's name" />
+    </div>
+
+    <button id="calculate">Calculate</button>
+
+    <div id="result" class="result">
+      <p><span id="name1-display"></span> ❤️ <span id="name2-display"></span></p>
+      <p class="percentage"><span id="percentage">0</span>%</p>
+      <p id="message"></p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('calculate').addEventListener('click', function () {
+      const name1 = document.getElementById('name1').value.trim();
+      const name2 = document.getElementById('name2').value.trim();
+
+      if (!name1 || !name2) {
+        alert('Please enter both names');
+        return;
+      }
+
+      // Display names
+      document.getElementById('name1-display').textContent = name1;
+      document.getElementById('name2-display').textContent = name2;
+
+      // Calculate percentage
+      const combinedNames = (name1 + name2).toLowerCase();
+      let total = 0;
+      for (let i = 0; i < combinedNames.length; i++) {
+        total += combinedNames.charCodeAt(i);
+      }
+
+      const commonLetters = findCommonLetters(name1, name2);
+      const lengthFactor = Math.abs(name1.length - name2.length);
+
+      let percentage = (total % 30) + 50 + (commonLetters * 3) - lengthFactor;
+      percentage = Math.max(30, Math.min(100, percentage));
+
+      // Update percentage with animation
+      animateNumber(document.getElementById('percentage'), 0, percentage);
+
+      // Show message
+      const messageElem = document.getElementById('message');
+      if (percentage >= 80) {
+        messageElem.textContent = "Amazing friendship!";
+      } else if (percentage >= 60) {
+        messageElem.textContent = "Great compatibility!";
+      } else if (percentage >= 40) {
+        messageElem.textContent = "You have potential!";
+      } else {
+        messageElem.textContent = "Opposites can attract!";
+      }
+
+      // Show result
+      document.getElementById('result').style.display = 'block';
+    });
+
+    function findCommonLetters(str1, str2) {
+      str1 = str1.toLowerCase();
+      str2 = str2.toLowerCase();
+      let count = 0;
+      let checked = new Set();
+
+      for (let i = 0; i < str1.length; i++) {
+        const char = str1[i];
+        if (str2.includes(char) && !checked.has(char)) {
+          count++;
+          checked.add(char);
+        }
+      }
+      return count;
+    }
+
+    function animateNumber(element, start, end) {
+      let current = start;
+      const increment = (end - start) / 30;
+      const timer = setInterval(function () {
+        current += increment;
+        if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+          clearInterval(timer);
+          current = end;
+        }
+        element.textContent = Math.round(current);
+      }, 20);
+    }
+  </script>
+</body>
+</html> 
